@@ -22,9 +22,9 @@ void setup() {
 // the loop function runs over and over again forever
 void loop() {
   byte a, b, b2, d, r;
-  signed char i;
+  signed long i;
   int m;
-  unsigned long n;
+  signed long n;
 
   // Variables:
   // a -- toggle main board LED blink
@@ -72,27 +72,33 @@ void loop() {
       // Button S3: Change counter direction
       if (b & 0b00000100)
       {
-        i = i>0 ? -1 : 1;
+        i = -i;
       }
 
       // Button S4: slow down counter
       if (b & 0b00001000)
       {
         // do not stop the counter here
-        if (i < -1 || i > 1)
+        if (i < -7 || i > 7)
         {
-           i = i>0 ? --i : ++i;
+           i = i>0 ? i-7 : i+7;
         }
       }
 
       // Button S5: Speed up counter
       if (b & 0b00010000)
       {
-        // max counter increment/decrement is 64
-        if (i < 64 || i > -64)
+        // max counter increment/decrement is 300
+        if (i < 300 || i > -300)
         {
-          i = i>0 ? ++i : --i;
+          i = i>0 ? i+7 : i-7;
         }
+      }
+
+      // Button S6: Reset counter speed to 1
+      if (b & 0b00100000)
+      {
+          i = i>0 ? 1 : -1;
       }
     }
 
@@ -114,8 +120,8 @@ void loop() {
     if (r)
     {
       n += i;
-      if (n == 100000000) n=0;
-      if (n > 99999999) n=99999999;
+      if (n > 99999999) n=0;
+      if (n < 0) n=99999999;
     }
   }
 }
